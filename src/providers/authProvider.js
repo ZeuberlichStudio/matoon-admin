@@ -2,7 +2,7 @@ const {API_URL} = process.env;
 
 export default {
     login: ({username, password}) => {
-        return fetch(`${API_URL}users/verify`, {
+        return fetch(`${API_URL}/users/verify`, {
             method: 'POST',
             body: JSON.stringify({ username, password }),
             headers: { 'Content-Type': 'application/json' }
