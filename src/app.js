@@ -1,6 +1,6 @@
 import React from 'react';
 import { Admin, Resource, ListGuesser, EditGuesser } from 'react-admin';
-import dataProvider from '~/providers/extendedProvider';
+import dataProvider from '~/providers/dataProvider';
 import authProvider from '~/providers/authProvider';
 
 import CatList from '~/components/lists/CatList.js'
