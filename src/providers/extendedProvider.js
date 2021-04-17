@@ -85,8 +85,8 @@ function uploadToS3(files, album = '') {
     const {S3_BUCKET} = process.env;
 
     const s3 = new AWS.S3({
-        S3_ACCESS,
-        S3_SECRET
+        accessKeyId: S3_ACCESS,
+        secretAccessKey: S3_SECRET
     });
 
     const uploads = files.map(file => s3.upload({
