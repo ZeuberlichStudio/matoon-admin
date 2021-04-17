@@ -80,17 +80,17 @@ export default {
 }
 
 function uploadToS3(files, album = '') {
-    const accessKeyId = 'AKIAIF7ZFGDSKWREXGZQ';
-    const secretAccessKey = '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';
-    const bucket = 'matoon-test';
+    const {S3_ACCESS} = process.env;
+    const {S3_SECRET} = process.env;
+    const {S3_BUCKET} = process.env;
 
     const s3 = new AWS.S3({
-        accessKeyId,
-        secretAccessKey
+        S3_ACCESS,
+        S3_SECRET
     });
 
     const uploads = files.map(file => s3.upload({
-        Bucket: bucket,
+        Bucket: S3_BUCKET,
         ContentType: 'image/jpeg',
         ACL: "public-read",
         Key: `${album}/${file.name}`,
