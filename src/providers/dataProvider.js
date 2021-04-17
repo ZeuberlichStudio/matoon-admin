@@ -8,7 +8,8 @@ export default {
         const { page, perPage } = params.pagination;
         const { field, order } = params.sort;
         const query = `limit=${perPage}&skip=${(page - 1) * perPage}&sort=${field},${order === 'DESC' ? '-1' : '1'}`;
-        const url = `${API_URL}${resource}?${query}`;
+        const url = `${API_URL}/${resource}?${query}`;
+
 
         return httpClient(url)
         .then(res => ({
