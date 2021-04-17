@@ -53,8 +53,8 @@ module.exports = env => {
             new MiniCssExtractPlugin({
                 filename: devMode ? 'css/[name].css' : 'css/[name].[contenthash].css',
             }),
-            devMode && new HotModuleReplacementPlugin(),
-            devMode && new ReactRefreshPlugin(),
+            // devMode && new HotModuleReplacementPlugin(),
+            // devMode && new ReactRefreshPlugin(),
             new HtmlWebpackPlugin({
                 title: 'Matoon Store',
                 template: './index.html'
@@ -67,7 +67,11 @@ module.exports = env => {
                     loader: 'babel-loader',
                     options: {
                         presets: [ '@babel/preset-env', '@babel/preset-react' ],
-                        plugins: [ '@loadable/babel-plugin' ]
+                        plugins: [ 
+                            '@loadable/babel-plugin',
+                            "@babel/plugin-transform-runtime"
+                        ],
+                        sourceType: 'unambiguous'
                     }
                 },
                 {   //styles
