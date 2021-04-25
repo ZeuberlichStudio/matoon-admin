@@ -14,7 +14,7 @@ export default {
                 
                 return response.json();
             })
-            .then(({ token }) => localStorage.setItem('token', token));
+            .then(token => localStorage.setItem('token', token));
     },
     logout: () => {
         localStorage.removeItem('token');

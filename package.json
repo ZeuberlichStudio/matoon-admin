@@ -4,7 +4,7 @@
   "description": "",
   "main": "webpack.config.js",
   "scripts": {
-    "dev": "webpack serve --env NODE_ENV=dev",
+    "local": "webpack serve --env NODE_ENV=dev",
     "build": "webpack --env NODE_ENV=production"
   },
   "devDependencies": {
@@ -39,6 +39,7 @@
     "ra-input-rich-text": "^3.12.0",
     "react": "^17.0.1",
     "react-admin": "^3.13.5",
+    "react-admin-color-input": "^3.0.0-beta.0",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
     "util": "^0.12.3"

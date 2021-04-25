@@ -1,24 +1,28 @@
-import React from 'react';
-import { Admin, Resource, ListGuesser, EditGuesser } from 'react-admin';
-import dataProvider from '~/providers/dataProvider';
+import React, { useContext } from 'react';
+import { Admin, Resource } from 'react-admin';
+import dataProvider from '~/providers/extendedProvider';
 import authProvider from '~/providers/authProvider';
 
 import CatList from '~/components/lists/CatList.js'
 import ProductList from '~/components/lists/ProductList.js'
 import PostList from '~/components/lists/PostList.js'
 import NameOnlyList from './components/lists/NameOnlyList';
+import ColorList from './components/lists/ColorList';
 
 import { CatEdit, CatCreate } from '~/components/editors/CatEditor.js';
-import { ProductEdit, ProductCreate } from '~/components/editors/ProductEditor.js';
+import EditProduct from '~/components/editors/ProductEditor.js';
 import { PostEdit, PostCreate } from '~/components/editors/PostEditor.js';
 import { NameOnlyEdit, NameOnlyCreate } from '~/components/editors/NameOnlyEditor.js';
+import { ColorCreate, ColorEdit } from '~/components/editors/ColorEditor.js';
+
+import CreateProduct from '~/components/create/CreateProduct.js';
 
 import ProductIcon from '@material-ui/icons/LocalMall';
 import CategoryIcon from '@material-ui/icons/Category';
 import MaterialIcon from '@material-ui/icons/Loyalty';
 import BrandIcon from '@material-ui/icons/Apple';
 import PostIcon from '@material-ui/icons/Book';
-
+import BrushIcon from '@material-ui/icons/Brush';
 
 function App() {
     return (
@@ -26,8 +30,8 @@ function App() {
             <Resource 
                 name="products" 
                 list={ProductList} 
-                edit={ProductEdit} 
-                create={ProductCreate} 
+                edit={EditProduct} 
+                create={CreateProduct} 
                 options={{ label: 'Товары' }}
                 icon={ProductIcon}
             />
@@ -63,7 +67,14 @@ function App() {
                 options={{ label: 'Посты' }}
                 icon={PostIcon}
             />
-            <Resource name="colors" />
+            <Resource 
+                name="colors" 
+                list={ColorList} 
+                edit={ColorEdit} 
+                create={ColorCreate} 
+                options={{ label: 'Цвета' }}
+                icon={BrushIcon}
+            />
             <Resource name="images" />
         </Admin>
     );

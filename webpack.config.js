@@ -21,7 +21,7 @@ module.exports = env => {
             compress: true,
             hot: true,
             open: true,
-            port: 3000
+            port: 3002
         },
         target: 'web',
         devtool: devMode ? 'inline-source-map' : 'hidden-source-map',
@@ -35,26 +35,26 @@ module.exports = env => {
             path: path.join(__dirname, 'dist'),
             publicPath: '/'
         },
-        // optimization: {
-        //     runtimeChunk: 'single',
-        //     splitChunks: {
-        //         cacheGroups: {
-        //             vendor: {
-        //                 test: /[\\/]node_modules[\\/]/,
-        //                 name: 'vendors',
-        //                 chunks: 'all'
-        //             }
-        //         }
-        //     }
-        // },
+        optimization: {
+            runtimeChunk: 'single',
+            splitChunks: {
+                cacheGroups: {
+                    vendor: {
+                        test: /[\\/]node_modules[\\/]/,
+                        name: 'vendors',
+                        chunks: 'all'
+                    }
+                }
+            }
+        },
         plugins: [
             new CleanWebpackPlugin(),
             new Dotenv({ path: `./.env${devMode ? '.dev' : ''}` }),
             new MiniCssExtractPlugin({
                 filename: devMode ? 'css/[name].css' : 'css/[name].[contenthash].css',
             }),
-            // devMode && new HotModuleReplacementPlugin(),
-            // devMode && new ReactRefreshPlugin(),
+            devMode && new HotModuleReplacementPlugin(),
+            devMode && new ReactRefreshPlugin(),
             new HtmlWebpackPlugin({
                 title: 'Matoon Store',
                 template: './index.html'
@@ -75,7 +75,7 @@ module.exports = env => {
                     }
                 },
                 {   //styles
-                    test: /\.s[ac]ss$/,
+                    test: /\.(sa|sc|c)ss$/,
                     use: [
                         devMode ? 'style-loader' : {
                             loader: MiniCssExtractPlugin.loader,

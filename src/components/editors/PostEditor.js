@@ -9,10 +9,10 @@ import {
     ReferenceArrayInput,
     TextInput,
     ImageInput,
-    ImageField,
-    FormDataConsumer
+    FormDataConsumer,
+    required
 } from 'react-admin';
-import RichTextInput from 'ra-input-rich-text';
+import ImageField from '~/components/fields/ImageField';
 
 const typeChoices = [
     {
@@ -52,10 +52,10 @@ export const PostEdit = props => (
         <TabbedForm>
             <FormTab label="Основное">
                 <ImageInput source="image" label="Изображение" labelSingle="Выберите одно изображение">
-                    <ImageField source="src" title="name"/>
+                    <ImageField/>
                 </ImageInput>
 
-                <TextInput source="name" label="Название"/>
+                <TextInput source="name" label="Заголовок" validate={required('Обязательное поле')}/>
 
                 <SelectInput 
                     source="type" 
@@ -63,6 +63,7 @@ export const PostEdit = props => (
                     optionText="name"
                     optionValue="value"
                     label="Тип отображения"
+                    validate={required('Обязательное поле')}
                 />
 
                 <FormDataConsumer>
@@ -75,9 +76,10 @@ export const PostEdit = props => (
                                 optionValue="value"
                                 {...rest}
                                 label="Размер в сетке"
+                                validate={required('Обязательное поле')}
                             /> :
                             <ReferenceArrayInput source="page" reference="cats" label="Страницы">
-                                <ReferenceArraySelect additionalChoices={staticPageChoices}/>
+                                <ReferenceArraySelect additionalChoices={staticPageChoices} validate={required('Обязательное поле')}/>
                             </ReferenceArrayInput>
                     }
                 </FormDataConsumer>
@@ -87,7 +89,7 @@ export const PostEdit = props => (
 
             {/* TODO почему не обновляется текст? */}
             <FormTab label="Текст">
-                <RichTextInput source="content" label="Содержание"/>
+                <TextInput fullWidth={true} source="content" label="Содержание" validate={required('Обязательное поле')}/>
             </FormTab>
         </TabbedForm>
     </Edit>
@@ -98,10 +100,10 @@ export const PostCreate = props => (
         <TabbedForm>
             <FormTab label="Основное">
                 <ImageInput source="image" label="Изображение" labelSingle="Выберите одно изображение">
-                    <ImageField source="src" title="name"/>
+                    <ImageField/>
                 </ImageInput>
 
-                <TextInput source="name" label="Название"/>
+                <TextInput source="name" label="Заголовок" validate={required('Обязательное поле')}/>
 
                 <SelectInput 
                     source="type" 
@@ -109,6 +111,7 @@ export const PostCreate = props => (
                     optionText="name"
                     optionValue="value"
                     label="Тип отображения"
+                    validate={required('Обязательное поле')}
                 />
 
                 <FormDataConsumer>
@@ -123,7 +126,7 @@ export const PostCreate = props => (
                                 label="Размер в сетке"
                             /> :
                             <ReferenceArrayInput source="page" reference="cats" label="Страницы">
-                                <ReferenceArraySelect additionalChoices={staticPageChoices}/>
+                                <ReferenceArraySelect additionalChoices={staticPageChoices} validate={required('Обязательное поле')}/>
                             </ReferenceArrayInput>
                     }
                 </FormDataConsumer>
@@ -133,7 +136,7 @@ export const PostCreate = props => (
 
             {/* TODO почему не обновляется текст? */}
             <FormTab label="Текст">
-                <RichTextInput source="content" label="Содержание"/>
+                <TextInput fullWidth={true} source="content" label="Содержание" validate={required('Обязательное поле')}/>            
             </FormTab>
         </TabbedForm>
     </Create>

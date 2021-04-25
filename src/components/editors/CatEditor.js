@@ -6,7 +6,8 @@ import {
     ReferenceInput,
     SelectInput,
     TextInput,
-    NumberInput
+    NumberInput,
+    required
 } from 'react-admin';
 
 const EditorTitle = ({record}) => <span>Редактировать {record.name}</span>;
@@ -14,7 +15,7 @@ const EditorTitle = ({record}) => <span>Редактировать {record.name}
 export const CatEdit = props => (
     <Edit {...props} title={<EditorTitle/>}>
         <SimpleForm>
-            <TextInput source="name" label="Название"/>
+            <TextInput source="name" label="Название" validate={required('обязательное поле')}/>
 
             <ReferenceInput source="parent" reference="cats" label="Родительская категория" filter={{ parent: { $exists: false } }}>
                 <SelectInput optionText="name" />
@@ -26,7 +27,7 @@ export const CatEdit = props => (
 export const CatCreate = props => (
     <Create {...props} title="Создать категорию">
         <SimpleForm>
-            <TextInput source="name" label="Название"/>
+            <TextInput source="name" label="Название" validate={required('обязательное поле')}/>
 
             <ReferenceInput source="parent" reference="cats" label="Родительская категория"  filter={{ parent: { $exists: false } }}>
                 <SelectInput optionText="name" />

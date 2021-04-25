@@ -6,7 +6,8 @@ import {
     ReferenceInput,
     SelectInput,
     TextInput,
-    NumberInput
+    NumberInput,
+    required
 } from 'react-admin';
 
 const EditorTitle = ({record}) => <span>Редактировать {record.name}</span>;
@@ -14,7 +15,7 @@ const EditorTitle = ({record}) => <span>Редактировать {record.name}
 export const NameOnlyEdit = props => (
     <Edit {...props} title={<EditorTitle/>}>
         <SimpleForm>
-            <TextInput source="name" />
+            <TextInput source="name" validate={required('обязательное поле')}/>
         </SimpleForm>
     </Edit>
 );
@@ -22,7 +23,7 @@ export const NameOnlyEdit = props => (
 export const NameOnlyCreate = props => (
     <Create {...props} title={props.title}>
         <SimpleForm>
-            <TextInput source="name" />
+            <TextInput source="name" validate={required('обязательное поле')}/>
         </SimpleForm>
     </Create>
 );

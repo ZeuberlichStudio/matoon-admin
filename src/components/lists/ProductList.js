@@ -3,9 +3,10 @@ import {
     List, Datagrid, ReferenceField, TextField, NumberField, DateField, ArrayField,
     SingleFieldList, ChipField, BooleanField
 } from 'react-admin';
+import ListToolbar from '~/components/ListToolbar';
 
 const ProductList = props => (
-    <List {...props} title="Товары">
+    <List {...props} title="Товары" actions={<ListToolbar/>} sort={{ field: 'meta.createdAt', order: 'DESC' }}>
         <Datagrid rowClick="edit">
             <BooleanField source="isPublished" label="Опубликован" />
             <TextField source="sku" label="Артикул" />
