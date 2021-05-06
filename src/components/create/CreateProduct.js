@@ -108,6 +108,7 @@ export default function CreateProduct(props) {
                 </FormTab>
 
                 <FormTab label="Описание">
+                    <TextInput fullWidth={true} source="shortDesc" label="Краткое описание"/>
                     <TextInput fullWidth={true} source="desc" label="Описание"/>
                 </FormTab>
 
