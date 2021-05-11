@@ -30,7 +30,7 @@ export default {
         }
         else if ( resource === 'posts' ) {
             const {image} = params.data;
-            const files = filterFiles([image]);
+            const files = filterFiles(image ? [image]: []);
 
             if ( files.length == 0 ) return dataProvider.update(resource, params);
             else return uploadImages(files)
