@@ -15,7 +15,7 @@ const CatList = props => (
                 <TextField source="name" />
             </ReferenceField>
             <TextField source="name" label="Название"/>
-            <NumberField source="productCount" label="Кол-во товаров"/>
+            {/* <NumberField source="productCount" label="Кол-во товаров"/> */}
         </Datagrid>
     </List>
 );
