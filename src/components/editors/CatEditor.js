@@ -4,10 +4,9 @@ import {
     Edit,
     SimpleForm,
     ReferenceInput,
-    SelectInput,
     TextInput,
-    NumberInput,
-    required
+    required,
+    AutocompleteInput
 } from 'react-admin';
 
 const EditorTitle = ({record}) => <span>Редактировать {record.name}</span>;
@@ -17,8 +16,14 @@ export const CatEdit = props => (
         <SimpleForm>
             <TextInput source="name" label="Название" validate={required('обязательное поле')}/>
 
-            <ReferenceInput source="parent" reference="cats" label="Родительская категория" filter={{ parent: { $exists: false } }}>
-                <SelectInput optionText="name" />
+            <ReferenceInput 
+                source="parent" 
+                reference="cats" 
+                label="Родительская категория" 
+                filter={{ parent: null }}
+                allowEmpty
+            >
+                <AutocompleteInput optionText="name" />
             </ReferenceInput>
         </SimpleForm>
     </Edit>
@@ -29,8 +34,14 @@ export const CatCreate = props => (
         <SimpleForm>
             <TextInput source="name" label="Название" validate={required('обязательное поле')}/>
 
-            <ReferenceInput source="parent" reference="cats" label="Родительская категория"  filter={{ parent: { $exists: false } }}>
-                <SelectInput optionText="name" />
+            <ReferenceInput 
+                source="parent" 
+                reference="cats" 
+                label="Родительская категория"  
+                filter={{ parent: null }}
+                allowEmpty
+            >
+                <AutocompleteInput optionText="name" />
             </ReferenceInput>
         </SimpleForm>
     </Create>

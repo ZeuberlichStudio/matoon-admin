@@ -14,9 +14,23 @@ import {
     ImageInput,
     SelectArrayInput,
     BooleanInput,
-    required
+    required,
+
+    useReferenceArrayInputContext
 } from 'react-admin';
 import ImageField from '~/components/fields/ImageField';
+
+const MyComp = ({input, ...props}) => {
+
+    React.useEffect(() => {console.log({input, ...props})}, [])
+
+    return (
+        <>
+            <span>{input.value._id}</span>
+            <AutocompleteInput {...props} input={input}/>
+        </>
+    );
+}
 
 const forChoices = [
     {
@@ -106,12 +120,22 @@ export default function ProductEdit(props) {
                                 <ImageField/>
                             </ImageInput>
 
-                            <ReferenceInput source="attributes.color" reference="colors" label="Цвет">  
-                                <AutocompleteInput optionText="name" optionValue="id" validate={required('Обязательное поле')}/>
+                            <ReferenceInput 
+                                source="attributes.color._id" 
+                                reference="colors" 
+                                label="Цвет" 
+                                validate={required('Обязательное поле')}
+                            >  
+                                <AutocompleteInput optionText="name" optionValue="_id" />
                             </ReferenceInput>
 
-                            <ReferenceInput source="attributes.brand" reference="brands" label="Бренд">  
-                                <AutocompleteInput optionText="name" optionValue="id" validate={required('Обязательное поле')}/>
+                            <ReferenceInput 
+                                source="attributes.brand._id" 
+                                reference="brands" 
+                                label="Бренд" 
+                                validate={required('Обязательное поле')}
+                            >  
+                                <AutocompleteInput optionText="name" optionValue="_id" />
                             </ReferenceInput>
 
                             <NumberInput source="stock" label="Наличие" validate={required('Обязательное поле')}/>

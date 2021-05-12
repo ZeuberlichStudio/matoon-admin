@@ -11,10 +11,11 @@ const httpClient = (url, options = {}) => {
 }
 
 export default {
-    getList(resource, params) {
-        const { page, perPage } = params.pagination;
-        const { field, order } = params.sort;
-        const query = `limit=${perPage}&skip=${(page - 1) * perPage}&sort=${field},${order === 'DESC' ? '-1' : '1'}`;
+    getList(resource, { pagination, sort, filter }) {
+        const { page, perPage } = pagination;
+        const { field, order } = sort;
+        const filterQuery = Object.entries(filter).reduce((acc, [key, val]) => acc + `&${key}=${val}`, '');
+        const query = `limit=${perPage}&skip=${(page - 1) * perPage}&sort=${field},${order === 'DESC' ? '-1' : '1'}&${filterQuery}`;
         const url = `${API_URL}/${resource}?${query}`;
 
 
