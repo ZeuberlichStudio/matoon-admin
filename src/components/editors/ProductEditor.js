@@ -89,7 +89,12 @@ export default function ProductEdit(props) {
                     <TextInput source="name" label="Название"/>
                     <TextInput source="sku" label="Артикул"/>
 
-                    <ReferenceInput source="cat" reference="cats" label="Категория">
+                    <ReferenceInput 
+                        source="cat" 
+                        reference="cats" 
+                        label="Категория"
+                        sort={{ field: 'name', order: 'ASC' }}
+                    >
                         <SelectInput optionText="name" optionValue="_id"/>
                     </ReferenceInput>
 
@@ -124,6 +129,7 @@ export default function ProductEdit(props) {
                                 source="attributes.color._id" 
                                 reference="colors" 
                                 label="Цвет" 
+                                sort={{ field: 'name', order: 'ASC' }}
                                 validate={required('Обязательное поле')}
                             >  
                                 <AutocompleteInput optionText="name" optionValue="_id" />
@@ -133,6 +139,7 @@ export default function ProductEdit(props) {
                                 source="attributes.brand._id" 
                                 reference="brands" 
                                 label="Бренд" 
+                                sort={{ field: 'name', order: 'ASC' }}
                                 validate={required('Обязательное поле')}
                             >  
                                 <AutocompleteInput optionText="name" optionValue="_id" />

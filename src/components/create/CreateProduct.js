@@ -88,8 +88,13 @@ export default function CreateProduct(props) {
                     <TextInput source="name" label="Название"/>
                     <TextInput source="sku" label="Артикул"/>
 
-                    <ReferenceInput source="cat" reference="cats" label="Категория">
-                        <SelectInput optionText="name" optionValue="_id"/>
+                    <ReferenceInput 
+                        source="cat" 
+                        reference="cats" 
+                        label="Категория"
+                        sort={{ field: 'name', order: 'ASC' }}
+                    >
+                        <AutocompleteInput optionText="name" optionValue="_id"/>
                     </ReferenceInput>
 
                     <SelectInput 
@@ -100,7 +105,12 @@ export default function CreateProduct(props) {
                         label="Для"
                     />
 
-                    <ReferenceInput source="materials" reference="materials" label="Материалы">
+                    <ReferenceInput 
+                        source="materials" 
+                        reference="materials" 
+                        label="Материалы"
+                        sort={{ field: 'name', order: 'ASC' }}
+                    >
                         <SelectArrayInput optionText="name" optionValue="_id"/>
                     </ReferenceInput>
 
@@ -119,11 +129,23 @@ export default function CreateProduct(props) {
                                 <ImageField source="src" title="name"/>
                             </ImageInput>
 
-                            <ReferenceInput source="attributes.color" reference="colors" label="Цвет" validate={required('Обязательное поле')}>  
+                            <ReferenceInput 
+                                source="attributes.color" 
+                                reference="colors" 
+                                label="Цвет" 
+                                sort={{ field: 'name', order: 'ASC' }}
+                                validate={required('Обязательное поле')}
+                            >  
                                 <AutocompleteInput optionText="name" optionValue="_id"/>
                             </ReferenceInput>
 
-                            <ReferenceInput source="attributes.brand" reference="brands" label="Бренд" validate={required('Обязательное поле')}>  
+                            <ReferenceInput 
+                                source="attributes.brand" 
+                                reference="brands" 
+                                label="Бренд" 
+                                validate={required('Обязательное поле')}
+                                sort={{ field: 'name', order: 'ASC' }}
+                            >  
                                 <AutocompleteInput optionText="name" optionValue="_id"/>
                             </ReferenceInput>
 

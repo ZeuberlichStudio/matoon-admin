@@ -20,6 +20,7 @@ export const CatEdit = props => (
                 source="parent" 
                 reference="cats" 
                 label="Родительская категория" 
+                sort={{ field: 'name', order: 'ASC' }}
                 filter={{ parent: null }}
                 allowEmpty
             >
@@ -37,7 +38,8 @@ export const CatCreate = props => (
             <ReferenceInput 
                 source="parent" 
                 reference="cats" 
-                label="Родительская категория"  
+                label="Родительская категория" 
+                sort={{ field: 'name', order: 'ASC' }} 
                 filter={{ parent: null }}
                 allowEmpty
             >
