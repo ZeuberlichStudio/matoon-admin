@@ -11,28 +11,53 @@ import {
 
 const EditorTitle = ({record}) => <span>Редактировать {record.name}</span>;
 
-export const CatEdit = props => (
-    <Edit {...props} title={<EditorTitle/>}>
-        <SimpleForm>
-            <TextInput source="name" label="Название" validate={required('обязательное поле')}/>
+const {API_URL} = process.env;
 
-            <ReferenceInput 
-                source="parent" 
-                reference="cats" 
-                label="Родительская категория" 
-                sort={{ field: 'name', order: 'ASC' }}
-                filter={{ parent: null }}
-                allowEmpty
-            >
-                <AutocompleteInput optionText="name" />
-            </ReferenceInput>
-        </SimpleForm>
-    </Edit>
-);
+function checkCatNameUnique(name) {
+    return fetch(`${API_URL}/cats/${name}?isSlug=true`)
+        .then(res => res.json())
+        .then(res => {
+            console.log(!res, res);
+            return !res;
+        })
+        .catch(err => err);
+}
+
+function checkIfHasChildren(id) {
+    return fetch(`${API_URL}/cats?parent=${id}`)
+        .then(res => res.json())
+        .then(res => res.length > 0)
+        .catch(err => err);
+}
+
+async function validateCat({ 
+    name,
+    slug,
+    _id,
+    parent
+}) {
+    try {
+        if ( !name ) return { name: 'Обязательное поле.' };
+
+        const errors = {};
+        const newSlug = name.toLowerCase().replace(/\s/g, '_')
+        const nameIsUnique = newSlug === slug || await checkCatNameUnique(newSlug);
+
+        if ( !nameIsUnique ) errors.name = 'Категория с данным названием уже существует';
+
+        const hasChildren = await checkIfHasChildren(_id);
+
+        if ( parent && hasChildren ) errors.parent = 'Роительская категория не может быть выставлена, так как у текущей категории есть подкатегории.';
+
+        return errors;
+    } catch (error) {
+        console.error(error);
+    }
+}
 
 export const CatCreate = props => (
     <Create {...props} title="Создать категорию">
-        <SimpleForm>
+        <SimpleForm redirect="list" validate={validateCat}>
             <TextInput source="name" label="Название" validate={required('обязательное поле')}/>
 
             <ReferenceInput 
@@ -47,4 +72,23 @@ export const CatCreate = props => (
             </ReferenceInput>
         </SimpleForm>
     </Create>
+);
+
+export const CatEdit = props => (
+    <Edit {...props} title={<EditorTitle/>}>
+        <SimpleForm validate={validateCat}>
+            <TextInput source="name" label="Название" validate={required('обязательное поле')}/>
+
+            <ReferenceInput 
+                source="parent" 
+                reference="cats" 
+                label="Родительская категория" 
+                sort={{ field: 'name', order: 'ASC' }}
+                filter={{ parent: null, exc: props.id }}
+                allowEmpty
+            >
+                <AutocompleteInput optionText="name" />
+            </ReferenceInput>
+        </SimpleForm>
+    </Edit>
 );

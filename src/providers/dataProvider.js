@@ -38,9 +38,17 @@ export default {
     getOne(resource, params) {
         const url = `${API_URL}/${resource}/${params.id}`;
 
-        return httpClient(url).then(({json}) => ({
-            data: Object.assign(json, { id: json._id })
-        }));
+        return httpClient(url).then(({json}) => {
+            const result = {
+                data: Object.assign(json, { id: json._id })
+            };
+
+            if ( resource == 'products' ) {
+                result.data.materials = json.materials.map(item => item._id);
+            } 
+
+            return result;
+        });
     },
 
     update(resource, params) {

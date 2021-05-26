@@ -3,6 +3,7 @@ import {
     List, Datagrid, TextField, DateField, ChipField, FunctionField, ReferenceArrayField
 } from 'react-admin';
 import ListToolbar from '~/components/ListToolbar';
+import Pagination from '~/components/lists/Pagination';
 
 const postTypes = {
     banner: 'Баннер',
@@ -10,7 +11,7 @@ const postTypes = {
 }
 
 const PostList = props => (
-    <List {...props} title="Посты" actions={<ListToolbar/>} sort={{ field: 'meta.createdAt', order: 'DESC' }}>
+    <List {...props} title="Посты" pagination={<Pagination/>} actions={<ListToolbar/>} sort={{ field: 'meta.createdAt', order: 'DESC' }} perPage={50}>
         <Datagrid rowClick="edit">
             <TextField source="name" label="Название" />
             <FunctionField label="Тип отображения" source="type" render={record => <i>{postTypes[record.type]}</i>}/>

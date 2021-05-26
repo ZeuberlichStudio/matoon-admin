@@ -4,9 +4,10 @@ import {
     SingleFieldList, ChipField, BooleanField
 } from 'react-admin';
 import ListToolbar from '~/components/ListToolbar';
+import Pagination from '~/components/lists/Pagination';
 
 const ProductList = props => (
-    <List {...props} title="Товары" actions={<ListToolbar/>} sort={{ field: 'meta.createdAt', order: 'DESC' }}>
+    <List {...props} title="Товары" pagination={<Pagination/>} actions={<ListToolbar/>} sort={{ field: 'meta.createdAt', order: 'DESC' }} perPage={50}>
         <Datagrid rowClick="edit">
             <BooleanField source="isPublished" label="Опубликован" />
             <TextField source="sku" label="Артикул" />

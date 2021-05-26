@@ -2,6 +2,38 @@ import dataProvider from './dataProvider';
 
 const {API_URL} = process.env;
 
+
+function filterFiles(images) {
+    return images.map(image => image?.rawFile instanceof File ? image.rawFile : false).filter(Boolean);
+}
+
+function uploadImages(files, key = 'images') {
+    const formData = new FormData();
+    
+    files.forEach(file => {
+        formData.append(key, file);
+    });
+
+    return fetch(`${API_URL}/images`, {
+        method: 'POST',
+        body: formData
+    })
+        .then(data => data.json())
+        .catch(console.error);
+}
+
+function replaceFilesWithRecordIds(images, records) {
+    return images.map(image => {
+        console.log('images', images);
+        console.log('records', records);
+        if ( image._id ) return image._id;
+        else return records.find(record => {
+            const fileName = image.rawFile.name.split('.')[0];
+            return record.name.includes(fileName);
+        });
+    });
+}
+
 export default {
     ...dataProvider,
     
@@ -84,30 +116,4 @@ export default {
         }
         else return dataProvider.create(resource, params);
     }
-}
-
-function filterFiles(images) {
-    return images.map(({rawFile}) => rawFile instanceof File ? rawFile : false).filter(Boolean);
-}
-
-function uploadImages(files, key = 'images') {
-    const formData = new FormData();
-    
-    files.forEach(file => {
-        formData.append(key, file);
-    });
-
-    return fetch(`${API_URL}/images`, {
-        method: 'POST',
-        body: formData
-    })
-        .then(data => data.json())
-        .catch(console.error);
-}
-
-function replaceFilesWithRecordIds(images, records) {
-    return images.map(image => {
-        if ( image._id ) return image._id;
-        else return records.find(record => record.name.includes(image.rawFile.name));
-    });
 }

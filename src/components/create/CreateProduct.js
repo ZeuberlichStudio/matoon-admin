@@ -12,9 +12,9 @@ import {
     AutocompleteInput,
     ImageInput,
     ImageField,
-    SelectArrayInput,
     BooleanInput,
-    required
+    required,
+    AutocompleteArrayInput
 } from 'react-admin';
 
 const forChoices = [
@@ -33,6 +33,7 @@ const forChoices = [
 ]
 
 const defaultValues = {
+    images: [],
     variants: [
         {
             images: [],
@@ -48,20 +49,40 @@ const defaultValues = {
     ]
 };
 
-function validateProduct ({
+const { API_URL } = process.env;
+
+function checkProductSkuUnique(slug) {
+    return fetch(`${API_URL}/products/${slug}?isSlug=true`)
+        .then(res => res.json())
+        .then(res => !res)
+        .catch(err => err);
+}
+
+async function validateProduct ({
     name,
     sku,
+    slug,
     variants,
     prices
 }) {
-    const errors = {};
+    try {
+        const errors = {};
+        
+        if ( !name ) errors.name = 'Обязательное поле';
+        if ( !sku ) errors.sku = 'Обязательное поле';
+        if ( variants?.length < 1 ) errors.variants = 'Укажите минимум одну вариацию товара';
+        if ( prices?.length < 1 ) errors.prices = 'Укажите минимум одну оптовую цену';
 
-    if ( !name ) errors.name = 'Обязательное поле';
-    if ( !sku ) errors.sku = 'Обязательное поле';
-    if ( variants?.length < 1 ) errors.variants = 'Укажите минимум одну вариацию товара';
-    if ( prices?.length < 1 ) errors.prices = 'Укажите минимум одну оптовую цену';
-
-    return errors;
+        if ( !sku ) return errors;
+    
+        const newSlug = sku.toLowerCase().replace(/\s/g, '_')
+        const skuIsUnique = slug === newSlug || await checkProductSkuUnique(newSlug);
+        if ( !skuIsUnique ) errors.sku = 'Товар с данным артикулом уже существует';
+    
+        return errors;   
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 function validatePriceQty (value, {prices}, input) {
@@ -71,16 +92,48 @@ function validatePriceQty (value, {prices}, input) {
     else return undefined;
 }
 
+async function validateImages (images, max) {
+    console.log(images);
+
+    if ( images?.length > max) return `Максимальное число изображений - ${max}`;
+
+    if ( images?.length > 0 ) {
+        const files = images.filter(image => !!image.rawFile);
+
+        if ( files.length == 0 ) return undefined;
+
+        const fileNames = files.map(file => file.rawFile.name.split('.')[0] + '.jpeg');
+
+        for (let i = 0; i < fileNames.length; i++) {
+            if ( fileNames.indexOf(fileNames[i]) !== i ) return 'Некоторые файлы повторяются или имеют одинаковое название.';
+        };
+
+        const records = await getImagesByName(fileNames);
+        
+        if ( records.length > 0 ) {
+
+            return 'Изображения с данным именем уже были загружены ранее: ' +
+                records.map(rec => rec.name.split('.')[0]).join(', ') + ';' +
+                '\nПереименуйте эти изображения или выберите другие.';
+        }
+    }
+
+    return undefined;
+}
+
 export default function CreateProduct(props) {
     return (
         <Create {...props} title="Создать товар">
-            <TabbedForm validate={validateProduct} initialValues={defaultValues}>
+            <TabbedForm validate={validateProduct} initialValues={defaultValues} redirect="list">
                 <FormTab label="Основное">
                     <ImageInput 
                         source="images" 
                         label="Общие изображения товара" 
                         labelMultiple="Выберите до 3-х изображений" 
                         multiple
+                        validate={v => validateImages(v, 3)}
+                        maxSize={4000000}
+                        accept="image/jpg,image/jpeg,image/png"
                     >
                         <ImageField source="src" title="name"/>
                     </ImageInput>
@@ -111,21 +164,29 @@ export default function CreateProduct(props) {
                         label="Материалы"
                         sort={{ field: 'name', order: 'ASC' }}
                     >
-                        <SelectArrayInput optionText="name" optionValue="_id"/>
+                        <AutocompleteArrayInput optionText="name" optionValue="_id"/>
                     </ReferenceInput>
 
                     <BooleanInput source='isPublished'/>
                 </FormTab>
 
                 <FormTab label="Описание">
-                    <TextInput fullWidth={true} source="shortDesc" label="Краткое описание"/>
-                    <TextInput fullWidth={true} source="desc" label="Описание"/>
+                    <TextInput fullWidth={true} source="shortDesc" label="Краткое описание" multiline />
+                    <TextInput fullWidth={true} source="desc" label="Описание" multiline />
                 </FormTab>
 
                 <FormTab label="Вариации/наличие">
                     <ArrayInput source="variants">
                         <SimpleFormIterator>
-                            <ImageInput source="images" label="Изображения вариации" labelMultiple="Выберите до 2-х изображений" multiple>
+                            <ImageInput 
+                                source="images" 
+                                label="Изображения вариации" 
+                                labelMultiple="Выберите до 2-х изображений" 
+                                multiple
+                                validate={v => validateImages(v, 2)}
+                                maxSize={4000000}
+                                accept="image/jpg,image/jpeg,image/png"
+                            >
                                 <ImageField source="src" title="name"/>
                             </ImageInput>
 

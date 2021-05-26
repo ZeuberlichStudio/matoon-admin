@@ -26,7 +26,11 @@ import BrushIcon from '@material-ui/icons/Brush';
 
 function App() {
     return (
-        <Admin title="Matoon Store" dataProvider={dataProvider} authProvider={authProvider}>
+        <Admin 
+            title="Matoon Store" 
+            dataProvider={dataProvider} 
+            authProvider={authProvider}
+        >
             <Resource 
                 name="products" 
                 list={ProductList} 

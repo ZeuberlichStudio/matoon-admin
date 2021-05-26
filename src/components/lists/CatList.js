@@ -7,14 +7,15 @@ import {
     NumberField
 } from 'react-admin';
 import ListToolbar from '~/components/ListToolbar';
+import Pagination from '~/components/lists/Pagination';
 
 const CatList = props => (
-    <List {...props} title="Категории" actions={<ListToolbar/>} sort={{ field: 'parent', order: 'ASC' }}>
+    <List {...props} title="Категории" pagination={<Pagination/>} actions={<ListToolbar/>} sort={{ field: 'parent', order: 'ASC' }} perPage={50}>
         <Datagrid rowClick="edit">
+            <TextField source="name" label="Название"/>
             <ReferenceField source="parent" reference="cats" label="Родительская категория">
                 <TextField source="name" />
             </ReferenceField>
-            <TextField source="name" label="Название"/>
             {/* <NumberField source="productCount" label="Кол-во товаров"/> */}
         </Datagrid>
     </List>
