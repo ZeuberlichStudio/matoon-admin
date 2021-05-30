@@ -13,7 +13,7 @@ import NoDeleteEditorToolbar from '~/components/NoDeleteEditorToolbar';
 const EditTitle = ({record}) => <span>Редактировать {record.name}</span>;
 
 export const ColorCreate = (props) => (
-    <Create {...props} title="Создать цвет">
+    <Create {...props} title="Создать цвет" mutationMode="pessimistic">
         <SimpleForm redirect="list">
             <TextInput source="name" label="Название" validate={required('обязательное поле')}/>
             <ColorInput source="code" label="Цвет" validate={required('обязательное поле')}/>
@@ -22,7 +22,7 @@ export const ColorCreate = (props) => (
 )
 
 export const ColorEdit = (props) => (
-    <Edit {...props} title={<EditTitle/>}>
+    <Edit {...props} title={<EditTitle/>} mutationMode="pessimistic">
         <SimpleForm toolbar={<NoDeleteEditorToolbar />}>
             <TextInput source="name" label="Название" validate={required('обязательное поле')}/>
             <ColorInput source="code" label="Цвет" validate={required('обязательное поле')}/>

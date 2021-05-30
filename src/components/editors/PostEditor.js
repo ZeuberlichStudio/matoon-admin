@@ -119,7 +119,7 @@ const ReferenceArraySelect = ({additionalChoices = [], choices, ...rest}) => (
 );
 
 export const PostCreate = props => (
-    <Create {...props} title="Создать пост">
+    <Create {...props} title="Создать пост" mutationMode="pessimistic">
         <TabbedForm redirect="list" validate={validatePost}>
             <FormTab label="Основное">
                 <ImageInput 
@@ -173,7 +173,7 @@ export const PostCreate = props => (
 );
 
 export const PostEdit = props => (
-    <Edit {...props} title={<EditorTitle/>}>
+    <Edit {...props} title={<EditorTitle/>} mutationMode="pessimistic">
         <TabbedForm validate={validatePost}>
             <FormTab label="Основное">
                 <ImageInput 

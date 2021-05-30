@@ -51,10 +51,16 @@ const defaultValues = {
 
 const { API_URL } = process.env;
 
-function checkProductSkuUnique(slug) {
-    return fetch(`${API_URL}/products/${slug}?isSlug=true`)
+function checkProductSkuUnique(sku) {
+    return fetch(`${API_URL}/products/${sku}?isSlug=true`)
         .then(res => res.json())
         .then(res => !res)
+        .catch(err => err);
+}
+
+function getImagesByName(names) {
+    return fetch(`${API_URL}/images?name=${names.join(',')}`)
+        .then(res => res.json())
         .catch(err => err);
 }
 
@@ -93,8 +99,6 @@ function validatePriceQty (value, {prices}, input) {
 }
 
 async function validateImages (images, max) {
-    console.log(images);
-
     if ( images?.length > max) return `Максимальное число изображений - ${max}`;
 
     if ( images?.length > 0 ) {

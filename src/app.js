@@ -10,12 +10,10 @@ import NameOnlyList from './components/lists/NameOnlyList';
 import ColorList from './components/lists/ColorList';
 
 import { CatEdit, CatCreate } from '~/components/editors/CatEditor.js';
-import EditProduct from '~/components/editors/ProductEditor.js';
+import { ProductEdit, ProductCreate } from '~/components/editors/ProductEditor.js';
 import { PostEdit, PostCreate } from '~/components/editors/PostEditor.js';
 import { NameOnlyEdit, NameOnlyCreate } from '~/components/editors/NameOnlyEditor.js';
 import { ColorCreate, ColorEdit } from '~/components/editors/ColorEditor.js';
-
-import CreateProduct from '~/components/create/CreateProduct.js';
 
 import ProductIcon from '@material-ui/icons/LocalMall';
 import CategoryIcon from '@material-ui/icons/Category';
@@ -34,8 +32,8 @@ function App() {
             <Resource 
                 name="products" 
                 list={ProductList} 
-                edit={EditProduct} 
-                create={CreateProduct} 
+                edit={ProductEdit} 
+                create={ProductCreate} 
                 options={{ label: 'Товары' }}
                 icon={ProductIcon}
             />

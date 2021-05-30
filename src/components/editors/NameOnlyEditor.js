@@ -14,7 +14,7 @@ import NoDeleteEditorToolbar from '~/components/NoDeleteEditorToolbar';
 const EditorTitle = ({record}) => <span>Редактировать {record.name}</span>;
 
 export const NameOnlyCreate = props => (
-    <Create {...props} title={props.title}>
+    <Create {...props} title={props.title} mutationMode="pessimistic">
         <SimpleForm redirect="list">
             <TextInput source="name" validate={required('обязательное поле')}/>
         </SimpleForm>
@@ -22,7 +22,7 @@ export const NameOnlyCreate = props => (
 );
 
 export const NameOnlyEdit = props => (
-    <Edit {...props} title={<EditorTitle/>}>
+    <Edit {...props} title={<EditorTitle/>} mutationMode="pessimistic">
         <SimpleForm toolbar={<NoDeleteEditorToolbar/>}>
             <TextInput source="name" validate={required('обязательное поле')}/>
         </SimpleForm>

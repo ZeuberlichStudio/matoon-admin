@@ -24,6 +24,8 @@ function checkCatNameUnique(name) {
 }
 
 function checkIfHasChildren(id) {
+    if ( !id ) return false;
+
     return fetch(`${API_URL}/cats?parent=${id}`)
         .then(res => res.json())
         .then(res => res.length > 0)
@@ -56,7 +58,7 @@ async function validateCat({
 }
 
 export const CatCreate = props => (
-    <Create {...props} title="Создать категорию">
+    <Create {...props} title="Создать категорию" mutationMode="pessimistic">
         <SimpleForm redirect="list" validate={validateCat}>
             <TextInput source="name" label="Название" validate={required('обязательное поле')}/>
 
@@ -75,7 +77,7 @@ export const CatCreate = props => (
 );
 
 export const CatEdit = props => (
-    <Edit {...props} title={<EditorTitle/>}>
+    <Edit {...props} title={<EditorTitle/>} mutationMode="pessimistic">
         <SimpleForm validate={validateCat}>
             <TextInput source="name" label="Название" validate={required('обязательное поле')}/>
 

@@ -8,6 +8,7 @@ function filterFiles(images) {
 }
 
 function uploadImages(files, key = 'images') {
+    const token = localStorage.getItem('token');
     const formData = new FormData();
     
     files.forEach(file => {
@@ -16,6 +17,9 @@ function uploadImages(files, key = 'images') {
 
     return fetch(`${API_URL}/images`, {
         method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        },
         body: formData
     })
         .then(data => data.json())

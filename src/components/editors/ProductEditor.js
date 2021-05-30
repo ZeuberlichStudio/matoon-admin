@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+    Create,
     Edit,
     TabbedForm,
     FormTab,
@@ -12,12 +13,13 @@ import {
     SimpleFormIterator,
     AutocompleteInput,
     ImageInput,
+    ImageField,
     AutocompleteArrayInput,
     BooleanInput,
     required,
     useInput
 } from 'react-admin';
-import ImageField from '~/components/fields/ImageField';
+import CustomImageField from '~/components/fields/ImageField';
 
 const forChoices = [
     {
@@ -34,7 +36,24 @@ const forChoices = [
     }
 ]
 
-const EditTitle = ({record}) => <span>Редактировать {record.sku}</span>;
+const defaultValues = {
+    images: [],
+    variants: [
+        {
+            images: [],
+            attributes: {
+                color: null,
+                brand: null
+            }
+        }
+    ],
+    prices: [
+        {
+            minQty: 1,
+            amount: null
+        }
+    ]
+};
 
 const { API_URL } = process.env;
 
@@ -58,20 +77,24 @@ async function validateProduct ({
     prices,
     slug
 }) {
-    const errors = {};
+    try {
+        const errors = {};
+        
+        if ( !name ) errors.name = 'Обязательное поле';
+        if ( !sku ) errors.sku = 'Обязательное поле';
+        if ( variants?.length < 1 ) errors.variants = 'Укажите минимум одну вариацию товара';
+        if ( prices?.length < 1 ) errors.prices = 'Укажите минимум одну оптовую цену';
 
-    if ( !name ) errors.name = 'Обязательное поле';
-    if ( !sku ) errors.sku = 'Обязательное поле';
-    if ( variants?.length < 1 ) errors.variants = 'Укажите минимум одну вариацию товара';
-    if ( prices?.length < 1 ) errors.prices = 'Укажите минимум одну оптовую цену';
-
-    if ( !sku ) return errors;
-
-    const newSlug = sku.toLowerCase().replace(/\s/g, '_')
-    const skuIsUnique = slug === newSlug || await checkProductSkuUnique(newSlug);
-    if ( !skuIsUnique ) errors.sku = 'Товар с данным артикулом уже существует';
-
-    return errors;
+        if ( !sku ) return errors;
+    
+        const newSlug = sku.toLowerCase().replace(/\s/g, '_')
+        const skuIsUnique = slug === newSlug || await checkProductSkuUnique(newSlug);
+        if ( !skuIsUnique ) errors.sku = 'Товар с данным артикулом уже существует';
+    
+        return errors;   
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 function validatePriceQty (value, {prices}, input) {
@@ -108,9 +131,11 @@ async function validateImages (images, max) {
     return undefined;
 }
 
-export default function ProductEdit(props) {
+const EditTitle = ({record}) => <span>Редактировать {record.sku}</span>;
+
+export function ProductEdit(props) {
     return (
-        <Edit {...props} title={<EditTitle/>}>
+        <Edit {...props} title={<EditTitle/>} mutationMode="pessimistic">
             <TabbedForm validate={values => validateProduct(values, props.id)}>
                 <FormTab label="Основное">
                     <ImageInput 
@@ -122,7 +147,7 @@ export default function ProductEdit(props) {
                         maxSize={4000000}
                         accept="image/jpg,image/jpeg,image/png"
                     >
-                        <ImageField/>
+                        <CustomImageField/>
                     </ImageInput>
 
                     <TextInput source="name" label="Название"/>
@@ -169,7 +194,7 @@ export default function ProductEdit(props) {
                                 maxSize={4000000}
                                 accept="image/jpg,image/jpeg,image/png"
                             >
-                                <ImageField/>
+                                <CustomImageField/>
                             </ImageInput>
 
                             <ReferenceInput 
@@ -241,3 +266,140 @@ export default function ProductEdit(props) {
         </Edit>
     )
 };
+
+export function ProductCreate(props) {
+    return (
+        <Create {...props} title="Создать товар" mutationMode="pessimistic">
+            <TabbedForm validate={validateProduct} initialValues={defaultValues} redirect="list">
+                <FormTab label="Основное">
+                    <ImageInput 
+                        source="images" 
+                        label="Общие изображения товара" 
+                        labelMultiple="Выберите до 3-х изображений" 
+                        multiple
+                        validate={v => validateImages(v, 3)}
+                        maxSize={4000000}
+                        accept="image/jpg,image/jpeg,image/png"
+                    >
+                        <ImageField source="src" title="name"/>
+                    </ImageInput>
+
+                    <TextInput source="name" label="Название"/>
+                    <TextInput source="sku" label="Артикул"/>
+
+                    <ReferenceInput 
+                        source="cat" 
+                        reference="cats" 
+                        label="Категория"
+                        sort={{ field: 'name', order: 'ASC' }}
+                    >
+                        <AutocompleteInput optionText="name" optionValue="_id"/>
+                    </ReferenceInput>
+
+                    <SelectInput 
+                        source="for" 
+                        choices={forChoices}
+                        optionText="name"
+                        optionValue="value"
+                        label="Для"
+                    />
+
+                    <ReferenceInput 
+                        source="materials" 
+                        reference="materials" 
+                        label="Материалы"
+                        sort={{ field: 'name', order: 'ASC' }}
+                    >
+                        <AutocompleteArrayInput optionText="name" optionValue="_id"/>
+                    </ReferenceInput>
+
+                    <BooleanInput source='isPublished'/>
+                </FormTab>
+
+                <FormTab label="Описание">
+                    <TextInput fullWidth={true} source="shortDesc" label="Краткое описание" multiline />
+                    <TextInput fullWidth={true} source="desc" label="Описание" multiline />
+                </FormTab>
+
+                <FormTab label="Вариации/наличие">
+                    <ArrayInput source="variants">
+                        <SimpleFormIterator>
+                            <ImageInput 
+                                source="images" 
+                                label="Изображения вариации" 
+                                labelMultiple="Выберите до 2-х изображений" 
+                                multiple
+                                validate={v => validateImages(v, 2)}
+                                maxSize={4000000}
+                                accept="image/jpg,image/jpeg,image/png"
+                            >
+                                <ImageField source="src" title="name"/>
+                            </ImageInput>
+
+                            <ReferenceInput 
+                                source="attributes.color" 
+                                reference="colors" 
+                                label="Цвет" 
+                                sort={{ field: 'name', order: 'ASC' }}
+                                validate={required('Обязательное поле')}
+                            >  
+                                <AutocompleteInput optionText="name" optionValue="_id"/>
+                            </ReferenceInput>
+
+                            <ReferenceInput 
+                                source="attributes.brand" 
+                                reference="brands" 
+                                label="Бренд" 
+                                validate={required('Обязательное поле')}
+                                sort={{ field: 'name', order: 'ASC' }}
+                            >  
+                                <AutocompleteInput optionText="name" optionValue="_id"/>
+                            </ReferenceInput>
+
+                            <NumberInput source="stock" label="Наличие" validate={required('Обязательное поле')}/>
+                        </SimpleFormIterator>
+                    </ArrayInput>
+                </FormTab>
+
+                {/* TODO добавить возможность добавления товара с одним атрибутом */}
+                <FormTab label="Спецификации">
+                    <ArrayInput source="specs" label="">
+                        <SimpleFormIterator>
+                            <TextInput source="[0]" label="Название"/>
+                            <TextInput source="[1]" label="Значение"/>
+                        </SimpleFormIterator>
+                    </ArrayInput>
+                </FormTab>
+
+                {/* TODO проверить валидацию минимального кол-ва */}
+                <FormTab label="Цены">
+                    <ArrayInput source="prices" label="">
+                        <SimpleFormIterator>
+                            <NumberInput source="minQty" label="Мин. необходимое кол-во" validate={validatePriceQty}/>
+                            <NumberInput source="amount" label="Цена за штуку" validate={required('Обязательное поле')}/>
+                        </SimpleFormIterator>
+                    </ArrayInput>
+                </FormTab>
+
+                <FormTab label="Вес/габариты">
+                    <NumberInput 
+                        source="shippingDetails.dimensions.w" 
+                        label="Ширина (мм)"
+                    />
+                    <NumberInput 
+                        source="shippingDetails.dimensions.l"
+                        label="Длина (мм)"
+                    />
+                    <NumberInput 
+                        source="shippingDetails.dimensions.h"
+                        label="Высота (мм)"
+                    />
+                    <NumberInput 
+                        source="shippingDetails.weight"
+                        label="Вес (г)"
+                    />
+                </FormTab>
+            </TabbedForm>
+        </Create>
+    );
+}
