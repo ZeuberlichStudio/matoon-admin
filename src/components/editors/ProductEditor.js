@@ -20,6 +20,7 @@ import {
     useInput
 } from 'react-admin';
 import CustomImageField from '~/components/fields/ImageField';
+import slugify from '../../helpers/slugify';
 
 const forChoices = [
     {
@@ -87,7 +88,7 @@ async function validateProduct ({
 
         if ( !sku ) return errors;
     
-        const newSlug = sku.toLowerCase().replace(/\s/g, '_')
+        const newSlug = slugify(sku);
         const skuIsUnique = slug === newSlug || await checkProductSkuUnique(newSlug);
         if ( !skuIsUnique ) errors.sku = 'Товар с данным артикулом уже существует';
     
@@ -100,7 +101,7 @@ async function validateProduct ({
 function validatePriceQty (value, {prices}, input) {
     const priceIndex = input.name.match(/\d/)[0];
     if ( priceIndex == 0 && value != 1 ) return 'Мин. кол-во заказанного товара для первой цены должно быть 1';
-    if ( value < prices[priceIndex - 1]?.minQty ) return 'Мин. кол-во заказанного товара должно быть больше, чем для предыдущей цены';
+    if ( Number.parseInt(value) < Number.parseInt(prices[priceIndex - 1]?.minQty) ) return 'Мин. кол-во заказанного товара должно быть больше, чем для предыдущей цены';
     else return undefined;
 }
 
@@ -158,6 +159,7 @@ export function ProductEdit(props) {
                         reference="cats" 
                         label="Категория"
                         sort={{ field: 'name', order: 'ASC' }}
+                        perPage={100}
                     >
                         <SelectInput optionText="name" optionValue="_id"/>
                     </ReferenceInput>
@@ -171,7 +173,7 @@ export function ProductEdit(props) {
                     />
 
                     <ReferenceArrayInput source="materials" reference="materials" label="Материалы">
-                        <AutocompleteArrayInput optionText="name" optionValue="_id"/>
+                        <AutocompleteArrayInput optionText="name" optionValue="_id" perPage={200}/>
                     </ReferenceArrayInput>
 
                     <BooleanInput source='isPublished'/>
@@ -203,6 +205,7 @@ export function ProductEdit(props) {
                                 label="Цвет" 
                                 sort={{ field: 'name', order: 'ASC' }}
                                 validate={required('Обязательное поле')}
+                                perPage={200}
                             >  
                                 <AutocompleteInput optionText="name" optionValue="_id" />
                             </ReferenceInput>
@@ -213,6 +216,7 @@ export function ProductEdit(props) {
                                 label="Бренд" 
                                 sort={{ field: 'name', order: 'ASC' }}
                                 validate={required('Обязательное поле')}
+                                perPage={200}
                             >  
                                 <AutocompleteInput optionText="name" optionValue="_id" />
                             </ReferenceInput>
@@ -292,6 +296,7 @@ export function ProductCreate(props) {
                         reference="cats" 
                         label="Категория"
                         sort={{ field: 'name', order: 'ASC' }}
+                        perPage={100}
                     >
                         <AutocompleteInput optionText="name" optionValue="_id"/>
                     </ReferenceInput>
@@ -309,6 +314,7 @@ export function ProductCreate(props) {
                         reference="materials" 
                         label="Материалы"
                         sort={{ field: 'name', order: 'ASC' }}
+                        perPage={200}
                     >
                         <AutocompleteArrayInput optionText="name" optionValue="_id"/>
                     </ReferenceInput>
@@ -342,6 +348,7 @@ export function ProductCreate(props) {
                                 label="Цвет" 
                                 sort={{ field: 'name', order: 'ASC' }}
                                 validate={required('Обязательное поле')}
+                                perPage={200}
                             >  
                                 <AutocompleteInput optionText="name" optionValue="_id"/>
                             </ReferenceInput>
@@ -352,6 +359,7 @@ export function ProductCreate(props) {
                                 label="Бренд" 
                                 validate={required('Обязательное поле')}
                                 sort={{ field: 'name', order: 'ASC' }}
+                                perPage={200}
                             >  
                                 <AutocompleteInput optionText="name" optionValue="_id"/>
                             </ReferenceInput>

@@ -13,6 +13,7 @@ import {
     required
 } from 'react-admin';
 import ImageField from '~/components/fields/ImageField';
+import slugify from '../../helpers/slugify';
 
 const typeChoices = [
     {
@@ -73,7 +74,7 @@ async function validatePost({
         if ( !name ) return { name: 'Обязательное поле.' };
 
         const errors = {};
-        const newSlug = name.toLowerCase().replace(/\s/g, '_')
+        const newSlug = slugify(name);
         const nameIsUnique = newSlug === slug || await checkPostNameUnique(newSlug);
 
         if ( !nameIsUnique ) errors.name = 'Пост с данным названием уже существует';
@@ -156,7 +157,7 @@ export const PostCreate = props => (
                                 label="Размер в сетке"
                             /> :
                             <ReferenceArrayInput source="page" reference="cats" label="Страницы">
-                                <ReferenceArraySelect additionalChoices={staticPageChoices} validate={required('Обязательное поле')}/>
+                                <ReferenceArraySelect additionalChoices={staticPageChoices} validate={required('Обязательное поле')} perPage={100}/>
                             </ReferenceArrayInput>
                     }
                 </FormDataConsumer>
@@ -211,7 +212,7 @@ export const PostEdit = props => (
                                 validate={required('Обязательное поле')}
                             /> :
                             <ReferenceArrayInput source="page" reference="cats" label="Страницы">
-                                <ReferenceArraySelect additionalChoices={staticPageChoices} validate={required('Обязательное поле')}/>
+                                <ReferenceArraySelect additionalChoices={staticPageChoices} validate={required('Обязательное поле')} perPage={100}/>
                             </ReferenceArrayInput>
                     }
                 </FormDataConsumer>

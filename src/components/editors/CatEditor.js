@@ -8,6 +8,7 @@ import {
     required,
     AutocompleteInput
 } from 'react-admin';
+import slugify from '../../helpers/slugify';
 
 const EditorTitle = ({record}) => <span>Редактировать {record.name}</span>;
 
@@ -42,7 +43,7 @@ async function validateCat({
         if ( !name ) return { name: 'Обязательное поле.' };
 
         const errors = {};
-        const newSlug = name.toLowerCase().replace(/\s/g, '_')
+        const newSlug = slugify(name);
         const nameIsUnique = newSlug === slug || await checkCatNameUnique(newSlug);
 
         if ( !nameIsUnique ) errors.name = 'Категория с данным названием уже существует';
@@ -69,6 +70,7 @@ export const CatCreate = props => (
                 sort={{ field: 'name', order: 'ASC' }} 
                 filter={{ parent: null }}
                 allowEmpty
+                perPage={100}
             >
                 <AutocompleteInput optionText="name" />
             </ReferenceInput>
@@ -88,6 +90,7 @@ export const CatEdit = props => (
                 sort={{ field: 'name', order: 'ASC' }}
                 filter={{ parent: null, exc: props.id }}
                 allowEmpty
+                perPage={100}
             >
                 <AutocompleteInput optionText="name" />
             </ReferenceInput>
